@@ -1,0 +1,55 @@
+{
+    "_comment": "Ubuntu Server 18.04 LTS (HVM) in the right region for Strigo",
+    "variables": {
+        "aws_access_key": "{{ env `AWS_ACCESS_KEY_ID` }}",
+        "aws_secret_key": "{{ env `AWS_SECRET_ACCESS_KEY` }}",
+        "aws_region": "eu-central-1",
+        "source_ami": "ami-0b418580298265d5c",
+        "disk_size": "40"
+    },
+    "sensitive-variables": [ "aws_access_key", "aws_secret_key" ],
+    "builders": [
+        {
+            "type": "amazon-ebs",
+            "access_key": "{{ user `aws_access_key` }}",
+            "secret_key": "{{ user `aws_secret_key` }}",
+            "region": "{{ user `aws_region` }}",
+            "source_ami": "{{ user `source_ami` }}",
+            "instance_type": "t2.large",
+            "associate_public_ip_address": true,
+            "ssh_username": "ubuntu",
+            "ami_name": "elastic-kubernetes-{{ timestamp }}",
+            "ami_groups": [ "all" ],
+            "launch_block_device_mappings": [
+                {
+                    "device_name": "/dev/sda1",
+                    "volume_size": "{{ user `disk_size` }}",
+                    "volume_type": "gp2",
+                    "delete_on_termination": true
+                }
+            ]
+        }
+    ],
+    "provisioners": [
+        {
+            "type": "shell",
+            "inline": [
+                "sleep 30",
+                "sudo apt-get update && sudo apt-get -y install python-minimal && sudo apt-get -y install ansible"
+            ]
+        },
+        {
+            "type": "ansible-local",
+            "playbook_file": "configure.yml",
+            "playbook_dir": "."
+        },
+        {
+            "type": "shell",
+            "timeout": "120s",
+            "expect_disconnect": true,
+            "inline": [
+                "sudo reboot"
+            ]
+        }
+    ]
+}

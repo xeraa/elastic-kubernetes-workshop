@@ -1,0 +1,41 @@
+apiVersion: beat.k8s.elastic.co/v1beta1
+kind: Beat
+metadata:
+  name: packetbeat
+spec:
+  type: packetbeat
+  version: {{ stack_version }}
+  elasticsearchRef:
+    name: elasticsearch
+  kibanaRef:
+    name: kibana
+  config:
+    packetbeat.interfaces.device: any
+    packetbeat.protocols:
+    - type: dns
+      ports: [53]
+      include_authorities: true
+      include_additionals: true
+    - type: http
+      ports: [80, 8000, 8080, 9200]
+    packetbeat.flows:
+      timeout: 30s
+      period: 10s
+    processors:
+    - add_cloud_metadata: { }
+    - add_host_metadata: { }
+    - add_docker_metadata: { }
+    - add_kubernetes_metadata: { }
+  daemonSet:
+    podTemplate:
+      spec:
+        terminationGracePeriodSeconds: 30
+        hostNetwork: true
+        dnsPolicy: ClusterFirstWithHostNet
+        containers:
+        - name: packetbeat
+          securityContext:
+            runAsUser: 0
+            capabilities:
+              add:
+              - NET_ADMIN

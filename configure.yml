@@ -1,0 +1,95 @@
+- hosts: all
+  remote_user: ubuntu
+  become: true
+  gather_facts: yes
+
+
+  vars:
+      stack_version: 7.9.0
+      ubuntu_version: bionic
+
+
+  pre_tasks:
+    - name: Install Python2 to make Ansible work
+      raw: sudo apt-get update && sudo DEBIAN_FRONTEND=noninteractive apt-get -y install python-minimal
+
+  tasks:
+
+    - name: Update and upgrade apt packages
+      apt:
+        upgrade: dist
+        force_apt_get: yes
+
+    - name: Change the mmap to a reasonable size
+      shell: sysctl -w vm.max_map_count=262144
+
+    - name: Install some developer tools
+      apt:
+        name:
+          - ntp
+          - ntpdate
+          - python3-pip
+          - apt-transport-https
+          - ca-certificates
+          - software-properties-common
+          - whois
+        force_apt_get: yes
+
+    - name: Install Ansible dependencies
+      pip:
+        name: docker
+
+    - name: Install Docker's fingerprint
+      apt_key:
+        id: 0EBFCD88
+        url: https://download.docker.com/linux/ubuntu/gpg
+        state: present
+
+    - name: Install Docker's repository
+      apt_repository:
+        repo: deb [arch=amd64] https://download.docker.com/linux/ubuntu {{ ubuntu_version }} stable
+        state: present
+
+    - name: Install Docker's binaries
+      apt:
+        name:
+          - docker-ce
+          - docker-ce-cli
+        force_apt_get: yes
+
+    - name: Start and enable the Docker service
+      service:
+        name: docker
+        state: started
+        enabled: yes
+
+    - name: Fetch the Elastic Docker images for later use
+      docker_image:
+        name: "{{ item }}"
+        source: pull
+      with_items:
+        - "docker.elastic.co/elasticsearch/elasticsearch:{{ stack_version }}"
+        - "docker.elastic.co/kibana/kibana:{{ stack_version }}"
+        - "docker.elastic.co/beats/filebeat:{{ stack_version }}"
+        - "docker.elastic.co/beats/metricbeat:{{ stack_version }}"
+        - "docker.elastic.co/beats/heartbeat:{{ stack_version }}"
+
+    - name: Install K3s
+      shell: "curl -sfL https://get.k3s.io | sh -"
+
+    - name: Create a directory for the Operator specifications
+      file:
+        path: /opt/elastic-operator/
+        state: directory
+        mode: '0755'
+
+    - name: Provide the Operator specifications
+      template: "src=templates/{{ item }}.yml dest=/opt/elastic-operator/{{ item }}.yml"
+      loop:
+        - elasticsearch
+        - kibana
+        - apm-server
+        - filebeat
+        - metricbeat
+        - heartbeat
+        - packetbeat

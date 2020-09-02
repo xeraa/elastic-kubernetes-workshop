@@ -1,0 +1,33 @@
+apiVersion: beat.k8s.elastic.co/v1beta1
+kind: Beat
+metadata:
+  name: heartbeat
+spec:
+  type: heartbeat
+  version: {{ stack_version }}
+  elasticsearchRef:
+    name: elasticsearch
+  config:
+    heartbeat.monitors:
+    - type: tcp
+      schedule: '@every 5s'
+      name: Elasticsearch
+      hosts: ["elasticsearch-es-http.default.svc:9200"]
+    processors:
+    - add_cloud_metadata: { }
+    - add_host_metadata: { }
+    - add_docker_metadata: { }
+    - add_kubernetes_metadata: { }
+    - add_observer_metadata:
+        geo:
+          name: eu-central-1
+          location: 50.1105, 8.6822
+          continent_name: Europe
+          country_iso_code: DE
+          city_name: Frankfurt
+  deployment:
+    podTemplate:
+      spec:
+        dnsPolicy: ClusterFirstWithHostNet
+        securityContext:
+          runAsUser: 0

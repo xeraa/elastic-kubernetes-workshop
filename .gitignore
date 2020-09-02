@@ -1,0 +1,7 @@
+.terraform/
+
+*.retry
+*.tfstate
+*.tfstate.backup
+*.tfstate.lock.info
+
