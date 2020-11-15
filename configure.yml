@@ -29,6 +29,7 @@
           - ca-certificates
           - software-properties-common
           - whois
+          - jq
         force_apt_get: yes
 
     - name: Install Ansible dependencies
