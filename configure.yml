@@ -77,14 +77,19 @@
     - name: Install K3s
       shell: "curl -sfL https://get.k3s.io | sh -"
 
-    - name: Create a directory for the Operator specifications
+    - name: Install Helm
+      snap:
+        name: helm
+        classic: yes
+
+    - name: Create a directory for the observability Operator specifications
       file:
-        path: /opt/elastic-operator/
+        path: /opt/observability-operator/
         state: directory
         mode: '0755'
 
-    - name: Provide the Operator specifications
-      template: "src=templates/{{ item }}.yml dest=/opt/elastic-operator/{{ item }}.yml"
+    - name: Provide the Operator configs for observability
+      template: "src=templates/observability/{{ item }}.yml dest=/opt/observability-operator/{{ item }}.yml"
       loop:
         - elasticsearch
         - kibana
@@ -93,3 +98,16 @@
         - metricbeat
         - heartbeat
         - packetbeat
+
+    - name: Create a directory to debug Operator specifications
+      file:
+        path: /opt/debug-operator/
+        state: directory
+        mode: '0755'
+
+    - name: Provide the Operator configs for the error debugging talk
+      template: "src=templates/debug/{{ item }}.yml dest=/opt/debug-operator/{{ item }}.yml"
+      loop:
+        - sample-1
+        - sample-2
+        - sample-3

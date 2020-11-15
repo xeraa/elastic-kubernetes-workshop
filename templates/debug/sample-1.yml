@@ -1,0 +1,25 @@
+apiVersion: elasticsearch.k8s.elastic.co/v1
+kind: Elasticsearch
+metadata:
+  name: quickstart
+spec:
+  version: {{ stack_version }}
+  nodeSets:
+    - name: default
+      count: 1
+      config:
+        node.store.allow_mmap: false
+---
+apiVersion: kibana.k8s.elastic.co/v1
+kind: Kibana
+metadata:
+  name: quickstart
+spec:
+  version: {{ stack_version }}
+  count: 1
+  elasticsearchRef:
+    name: elasticsearch-quickstart
+  http:
+    service:
+      spec:
+        type: LoadBalancer
