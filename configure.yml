@@ -5,13 +5,9 @@
 
 
   vars:
-      stack_version: 7.9.0
-      ubuntu_version: bionic
+      stack_version: 7.10.0
+      ubuntu_version: focal
 
-
-  pre_tasks:
-    - name: Install Python2 to make Ansible work
-      raw: sudo apt-get update && sudo DEBIAN_FRONTEND=noninteractive apt-get -y install python-minimal
 
   tasks:
 
