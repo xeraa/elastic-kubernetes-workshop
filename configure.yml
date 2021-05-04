@@ -30,6 +30,7 @@
           - software-properties-common
           - whois
           - jq
+        update_cache: yes
         force_apt_get: yes
 
     - name: Install Ansible dependencies
