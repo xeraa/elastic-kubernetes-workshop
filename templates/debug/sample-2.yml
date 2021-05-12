@@ -9,15 +9,15 @@ spec:
     count: 3
     config:
       node.store.allow_mmap: false
-    podTemplate:
-      spec:
-        containers:
-        - name: elasticsearch
-          env:
-          - name: ES_JAVA_OPTS
-            value: -Xms750m -Xmx750m
-          resources:
-            requests:
-              memory: 1.5Gi
-            limits:
-              memory: 1.5Gi
+  podTemplate:
+    spec:
+      containers:
+      - name: elasticsearch
+        env:
+        - name: ES_JAVA_OPTS
+          value: -Xms750m -Xmx750m
+        resources:
+          requests:
+            memory: 1.5Gi
+          limits:
+            memory: 1.5Gi
