@@ -1,6 +1,6 @@
 # Live Kubernetes Debugging with the Elastic Stack
 
-Hands-on workshop on how to monitor Kubernetes with the Elastic Stack. The repository also includes the [slides](https://github.com/xeraa/).
+Hands-on workshop on how to monitor Kubernetes with the Elastic Stack. Instead of a presentation, please use the steps in this readme.
 
 
 
