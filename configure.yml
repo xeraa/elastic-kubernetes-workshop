@@ -5,7 +5,7 @@
 
 
   vars:
-      stack_version: 7.16.2
+      stack_version: 8.5.1
       ubuntu_version: focal
 
 
