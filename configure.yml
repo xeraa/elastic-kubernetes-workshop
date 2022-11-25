@@ -104,11 +104,10 @@
         mode: '0755'
 
     - name: Provide the Operator configs for the error debugging talk
-      template: "src=templates/debug/{{ item }}.yml dest=/opt/debug-operator/{{ item }}.yml"
-      loop:
-        - sample-1
-        - sample-2
-        - sample-3
+      template:
+        src: "{{ item }}"
+        dest: /opt/debug-operator/
+      with_fileglob: "templates/debug/*.yml"
 
     - name: Alias for easier typing
       lineinfile:
