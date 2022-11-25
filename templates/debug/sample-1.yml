@@ -17,6 +17,8 @@ metadata:
 spec:
   version: {{ stack_version }}
   count: 1
+  config:
+    server.publicBaseUrl: "https://xeraa.wtf"
   elasticsearchRef:
     name: elasticsearch-quickstart
   http:
