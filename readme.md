@@ -13,8 +13,8 @@ We are running through this together and dive into the relevant parts. For the l
 
 1. Check that [K3s](https://k3s.io) is running: `sudo k3s kubectl get node`
 1. You can access it just like Kubernetes: `sudo kubectl get pods --all-namespaces`
-1. Install the Elastic Operator's Custom Resource Definition (CRD): `sudo kubectl create -f https://download.elastic.co/downloads/eck/1.9.1/crds.yaml`
-1. Install the Elastic Operator itself: `sudo kubectl apply -f https://download.elastic.co/downloads/eck/1.9.1/operator.yaml`
+1. Install the Elastic Operator's Custom Resource Definition (CRD): `sudo kubectl create -f https://download.elastic.co/downloads/eck/2.5.0/crds.yaml`
+1. Install the Elastic Operator itself: `sudo kubectl apply -f https://download.elastic.co/downloads/eck/2.5.0/operator.yaml`
 1. Check its status, which should just show some logs from the Operator: `sudo kubectl -n elastic-system logs -f statefulset.apps/elastic-operator`
 
 
