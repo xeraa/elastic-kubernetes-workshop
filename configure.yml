@@ -109,3 +109,9 @@
         - sample-1
         - sample-2
         - sample-3
+
+    - name: Alias for easier typing
+      lineinfile:
+        path: /etc/profile # It's a hack...
+        regexp: ^alias=
+        line: alias k="kubectl"
